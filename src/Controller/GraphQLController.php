@@ -7,15 +7,14 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\AST;
 use GraphQL\Utils\BuildSchema;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use GraphQL\Server\StandardServer;
+use Zend\Diactoros\Response;
 
 class GraphQLController extends Controller
 {
-    public function index(Request $httpFoundationRequest)
+    public function index(ServerRequestInterface $request)
     {
         // http://webonyx.github.io/graphql-php/executing-queries/#server-configuration-options
         $server = new StandardServer([
@@ -23,12 +22,13 @@ class GraphQLController extends Controller
             'debug'  => Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE | Debug::RETHROW_INTERNAL_EXCEPTIONS,
         ]);
 
-        $psr7Factory = new DiactorosFactory();
-        $request = $psr7Factory->createRequest($httpFoundationRequest);
 
         $result = $server->executePsrRequest($request);
 
-        return new Response(json_encode($result));
+        $response = new Response();
+        $response->getBody()->write(json_encode($result));
+
+        return $response;
     }
 
     private function getSchema()
