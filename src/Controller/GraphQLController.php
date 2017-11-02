@@ -36,15 +36,17 @@ class GraphQLController extends Controller
     private function getSchema(): Schema
     {
         $cacheDir = $this->container->getParameter('kernel.cache_dir');
+        $environment = $this->container->getParameter('kernel.environment');
 
+        $cachedEnvironments = ['prod'];
         $schemaCache = $cacheDir . '/schema.cache';
+        $schemaFile = __DIR__ . '/../../config/schema.graphqls';
 
-        // TODO: only cache in prod mode
-        if (!file_exists($schemaCache)) {
-            $document = Parser::parse(file_get_contents(__DIR__ . '/../../config/schema.graphqls'));
-            file_put_contents($schemaCache, "<?php\nreturn " . var_export(AST::toArray($document), true) . ';');
+        if (file_exists($schemaCache) && in_array($environment, $cachedEnvironments, false)) {
+            $document = AST::fromArray(unserialize(file_get_contents($schemaCache), []));
         } else {
-            $document = AST::fromArray(require $schemaCache);
+            $document = Parser::parse(file_get_contents($schemaFile));
+            file_put_contents($schemaCache, serialize(AST::toArray($document)) );
         }
 
         return BuildSchema::build($document, new TypeConfigDecorator());
