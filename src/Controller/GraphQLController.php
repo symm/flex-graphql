@@ -1,12 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\GraphQL\TypeConfigDecorator;
 use GraphQL\Error\Debug;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Schema;
 use GraphQL\Utils\AST;
 use GraphQL\Utils\BuildSchema;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use GraphQL\Server\StandardServer;
@@ -14,7 +16,7 @@ use Zend\Diactoros\Response;
 
 class GraphQLController extends Controller
 {
-    public function index(ServerRequestInterface $request)
+    public function index(ServerRequestInterface $request): ResponseInterface
     {
         // http://webonyx.github.io/graphql-php/executing-queries/#server-configuration-options
         $server = new StandardServer([
@@ -31,7 +33,7 @@ class GraphQLController extends Controller
         return $response;
     }
 
-    private function getSchema()
+    private function getSchema(): Schema
     {
         $cacheDir = $this->container->getParameter('kernel.cache_dir');
 
@@ -45,23 +47,6 @@ class GraphQLController extends Controller
             $document = AST::fromArray(require $schemaCache);
         }
 
-        $typeConfigDecorator = function($typeConfig, $typeDefinitionNode) {
-            $name = $typeConfig['name'];
-
-            if ($name === 'Query') {
-                $typeConfig['resolveField'] = function($root, $args, $context, ResolveInfo $info) {
-                    switch($info->fieldName) {
-                        case 'echo':
-                            return $args['message'];
-                        default:
-                            return null;
-                    }
-                };
-            }
-
-            return $typeConfig;
-        };
-
-        return BuildSchema::build($document, $typeConfigDecorator);
+        return BuildSchema::build($document, new TypeConfigDecorator());
     }
 }
