@@ -3,25 +3,33 @@
 namespace App\Controller;
 
 use GraphQL\Error\Debug;
-use Psr\Log\LoggerInterface;
+use GraphQL\Language\Parser;
+use GraphQL\Utils\AST;
+use GraphQL\Utils\BuildSchema;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Schema;
 use GraphQL\Server\StandardServer;
 
 class GraphQLController extends Controller
 {
     public function index(Request $httpFoundationRequest)
     {
+        $rootValue = [
+            'sum' => function($root, $args, $context) {
+                return $args['x'] + $args['y'];
+            },
+            'echo' => function($root, $args, $context) {
+                return $args['message'];
+            }
+        ];
+
         // http://webonyx.github.io/graphql-php/executing-queries/#server-configuration-options
         $server = new StandardServer([
             'schema' => $this->getSchema(),
-            'debug'  => Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE | Debug::RETHROW_INTERNAL_EXCEPTIONS
+            'debug'  => Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE | Debug::RETHROW_INTERNAL_EXCEPTIONS,
+            'rootValue' => $rootValue,
         ]);
 
         $psr7Factory = new DiactorosFactory();
@@ -34,45 +42,22 @@ class GraphQLController extends Controller
 
     private function getSchema()
     {
-        $queryType = new ObjectType([
-            'name' => 'Query',
-            'fields' => [
-                'echo' => [
-                    'type' => Type::string(),
-                    'args' => [
-                        'message' => ['type' => Type::string()],
-                    ],
-                    'resolve' => function ($root, $args) {
-                        return $root['prefix'] . $args['message'];
-                    }
-                ],
-            ],
-        ]);
+        $cacheDir = $this->container->getParameter('kernel.cache_dir');
 
-        $mutationType = new ObjectType([
-            'name' => 'Calc',
-            'fields' => [
-                'sum' => [
-                    'type' => Type::int(),
-                    'args' => [
-                        'x' => ['type' => Type::int()],
-                        'y' => ['type' => Type::int()],
-                    ],
-                    'resolve' => function ($root, $args) {
-                        return $args['x'] + $args['y'];
-                    },
-                ],
-            ],
-        ]);
+        $schemaCache = $cacheDir . '/schema.cache';
 
-        // See docs on schema options:
-        // http://webonyx.github.io/graphql-php/type-system/schema/#configuration-options
-        $schema = new Schema([
-            'query' => $queryType,
-            'mutation' => $mutationType,
-        ]);
+        // TODO: only cache in prod mode
+        if (!file_exists($schemaCache)) {
+            $document = Parser::parse(file_get_contents(__DIR__ . '/../../config/schema.graphqls'));
+            file_put_contents($schemaCache, "<?php\nreturn " . var_export(AST::toArray($document), true) . ';');
+        } else {
+            $document = AST::fromArray(require $schemaCache);
+        }
 
+        $typeConfigDecorator = function() {
+            return [];
+        };
 
-        return $schema;
+        return BuildSchema::build($document, $typeConfigDecorator);
     }
 }
