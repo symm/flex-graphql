@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use GraphQL\Error\Debug;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\AST;
 use GraphQL\Utils\BuildSchema;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -16,20 +17,10 @@ class GraphQLController extends Controller
 {
     public function index(Request $httpFoundationRequest)
     {
-        $rootValue = [
-            'sum' => function($root, $args, $context) {
-                return $args['x'] + $args['y'];
-            },
-            'echo' => function($root, $args, $context) {
-                return $args['message'];
-            }
-        ];
-
         // http://webonyx.github.io/graphql-php/executing-queries/#server-configuration-options
         $server = new StandardServer([
             'schema' => $this->getSchema(),
             'debug'  => Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE | Debug::RETHROW_INTERNAL_EXCEPTIONS,
-            'rootValue' => $rootValue,
         ]);
 
         $psr7Factory = new DiactorosFactory();
@@ -54,8 +45,21 @@ class GraphQLController extends Controller
             $document = AST::fromArray(require $schemaCache);
         }
 
-        $typeConfigDecorator = function() {
-            return [];
+        $typeConfigDecorator = function($typeConfig, $typeDefinitionNode) {
+            $name = $typeConfig['name'];
+
+            if ($name === 'Query') {
+                $typeConfig['resolveField'] = function($root, $args, $context, ResolveInfo $info) {
+                    switch($info->fieldName) {
+                        case 'echo':
+                            return $args['message'];
+                        default:
+                            return null;
+                    }
+                };
+            }
+
+            return $typeConfig;
         };
 
         return BuildSchema::build($document, $typeConfigDecorator);
