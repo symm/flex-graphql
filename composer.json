@@ -3,6 +3,8 @@
     "license": "proprietary",
     "require": {
         "php": "^7.0.8",
+        "phpunit/phpunit": "^6.4",
+        "symfony/browser-kit": "^3.3",
         "symfony/console": "^3.3",
         "symfony/framework-bundle": "^3.3",
         "symfony/monolog-bundle": "^3.1",
