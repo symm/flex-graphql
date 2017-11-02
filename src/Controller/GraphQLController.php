@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use GraphQL\Error\Debug;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,14 @@ use GraphQL\Server\StandardServer;
 
 class GraphQLController extends Controller
 {
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function index(Request $httpFoundationRequest)
     {
         // http://webonyx.github.io/graphql-php/executing-queries/#server-configuration-options
@@ -25,6 +34,13 @@ class GraphQLController extends Controller
 
         $psr7Factory = new DiactorosFactory();
         $request = $psr7Factory->createRequest($httpFoundationRequest);
+
+        if ($request->getMethod() === 'GET') {
+            $this->logger->debug('Query: ' . http_build_query($request->getQueryParams()));
+        }
+        if ($request->getMethod() === 'POST') {
+            $this->logger->debug('Query: ' . $request->getBody());
+        }
 
         $result = $server->executePsrRequest($request);
 
