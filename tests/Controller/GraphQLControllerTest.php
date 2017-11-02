@@ -123,7 +123,10 @@ class GraphQLControllerTest extends WebTestCase
             '/' . $queryString,
             [],
             [],
-            [],
+            [
+                'CONTENT_TYPE' => 'application/graphql',
+                'HTTP_USER_AGENT' => 'GraphQL Test Client'
+            ],
             $content
         );
 
