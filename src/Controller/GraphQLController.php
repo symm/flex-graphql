@@ -12,37 +12,43 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use GraphQL\Server\StandardServer;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Zend\Diactoros\Response;
 
 class GraphQLController extends Controller
 {
+    /**
+     * @var KernelInterface
+     */
+    private $kernel;
+
+    public function __construct(KernelInterface $kernel)
+    {
+        $this->kernel = $kernel;
+    }
+
     public function index(ServerRequestInterface $request): ResponseInterface
     {
+        $debug = $this->kernel->isDebug() ? Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE  : 0;
+
         // http://webonyx.github.io/graphql-php/executing-queries/#server-configuration-options
         $server = new StandardServer([
             'schema' => $this->getSchema(),
-            'debug'  => Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE | Debug::RETHROW_INTERNAL_EXCEPTIONS,
+            'debug'  => $debug,
         ]);
 
 
-        $result = $server->executePsrRequest($request);
-
         $response = new Response();
-        $response->getBody()->write(json_encode($result));
 
-        return $response;
+        return $server->processPsrRequest($request, $response, $response->getBody());
     }
 
     private function getSchema(): Schema
     {
-        $cacheDir = $this->container->getParameter('kernel.cache_dir');
-        $environment = $this->container->getParameter('kernel.environment');
-
-        $cachedEnvironments = ['prod'];
-        $schemaCache = $cacheDir . '/schema.cache';
+        $schemaCache = $this->kernel->getCacheDir(). '/schema.cache';
         $schemaFile = __DIR__ . '/../../config/schema.graphqls';
 
-        if (file_exists($schemaCache) && in_array($environment, $cachedEnvironments, false)) {
+        if (file_exists($schemaCache) && !$this->kernel->isDebug()) {
             $document = AST::fromArray(unserialize(file_get_contents($schemaCache), []));
         } else {
             $document = Parser::parse(file_get_contents($schemaFile));

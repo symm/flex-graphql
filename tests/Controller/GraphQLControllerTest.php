@@ -21,7 +21,7 @@ class GraphQLControllerTest extends WebTestCase
     {
         $response = $this->client->doQuery('');
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertJsonStringEqualsJsonString(
             '{"errors":[{"message":"GraphQL Request must include at least one of those two parameters: \"query\" or \"queryId\"","category":"request"}]}',
             $response->getContent()
