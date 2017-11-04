@@ -17,10 +17,18 @@ class GraphQLControllerTest extends WebTestCase
         $this->client = new GraphQLTestClient(static::createClient());
     }
 
+    private function assertDefaultHeaders($response)
+    {
+        $this->assertEquals('application/json', $response->headers->get('content-type'));
+        $this->assertEquals('no-cache, private', $response->headers->get('cache-control'));
+        $this->assertNotNull($response->headers->get('date'));
+    }
+
     public function testEmptyQuery()
     {
         $response = $this->client->doQuery('');
 
+        $this->assertDefaultHeaders($response);
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertJsonStringEqualsJsonString(
             '{"errors":[{"message":"GraphQL Request must include at least one of those two parameters: \"query\" or \"queryId\"","category":"request"}]}',
@@ -55,6 +63,7 @@ class GraphQLControllerTest extends WebTestCase
             ]
         );
 
+        $this->assertDefaultHeaders($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJsonStringEqualsJsonString(
             '{"data":{"echo":"' . $greeting . '"}}',
@@ -81,6 +90,7 @@ class GraphQLControllerTest extends WebTestCase
             ]
         );
 
+        $this->assertDefaultHeaders($response);
         $this->assertJsonStringEqualsJsonString(
             '{"data":{"sum": '. $expected .' }}',
             $response->getContent()
