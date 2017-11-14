@@ -26,6 +26,7 @@ class GraphQLTestClient
 
     private function performRequest(?string $query, array $variables = [], string $method): Response
     {
+        $query = trim($query);
         $payload = [];
 
         $queryString = '';
@@ -53,7 +54,7 @@ class GraphQLTestClient
             [],
             [],
             [
-                'CONTENT_TYPE' => 'application/graphql',
+                'CONTENT_TYPE' => 'application/json',
                 'HTTP_USER_AGENT' => 'GraphQL Test Client'
             ],
             $content

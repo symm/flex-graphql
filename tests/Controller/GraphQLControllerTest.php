@@ -76,11 +76,9 @@ class GraphQLControllerTest extends WebTestCase
      */
     public function testSumMutation(int $x, int $y, int $expected)
     {
-        $this->markTestIncomplete('Broken POST');
-
         $response = $this->client->doMutation(
             '
-            mutation ($x: Int, $y: Int) {
+            mutation Sum($x: Int, $y: Int) {
               sum(x: $x, y: $y)
             }
             ',

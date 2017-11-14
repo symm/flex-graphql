@@ -8,6 +8,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\AST;
 use GraphQL\Utils\BuildSchema;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -29,6 +30,9 @@ class GraphQLController extends Controller
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
+
+        $request = $this->parseJsonMiddleware($request);
+
         $debug = $this->kernel->isDebug() ? Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE  : 0;
 
         // http://webonyx.github.io/graphql-php/executing-queries/#server-configuration-options
@@ -41,6 +45,38 @@ class GraphQLController extends Controller
         $response = new Response();
 
         return $server->processPsrRequest($request, $response, $response->getBody());
+    }
+
+    // TODO: Implement as proper middleware ala
+    // https://github.com/zendframework/zend-expressive-helpers/blob/35126f5c7b71d56d5f1c18316d0bb67eef07aad9/src/BodyParams/BodyParamsMiddleware.php
+    private function parseJsonMiddleware(ServerRequestInterface $request): RequestInterface
+    {
+        $nonBodyRequests = [
+        'GET',
+        'HEAD',
+        'OPTIONS',
+        ];
+
+        if (in_array($request->getMethod(), $nonBodyRequests, false)) {
+            return $request;
+        }
+        $contentType = $request->getHeaderLine('Content-Type');
+        $parts = explode(';', $contentType);
+        $mime = array_shift($parts);
+        $isJson = (bool) preg_match('#[/+]json$#', trim($mime));
+
+        if ($isJson) {
+            $rawBody = (string) $request->getBody();
+            $parsedBody = json_decode($rawBody, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception('Error when parsing JSON request body: ' . json_last_error_msg());
+            }
+            $request = $request
+                ->withAttribute('rawBody', $rawBody)
+                ->withParsedBody($parsedBody);
+        }
+
+        return $request;
     }
 
     private function getSchema(): Schema

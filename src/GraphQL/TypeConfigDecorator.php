@@ -16,6 +16,19 @@ class TypeConfigDecorator
                 switch($info->fieldName) {
                     case 'echo':
                         return $args['message'];
+                    case 'sum':
+                        return $args['x'] * $args['y'];
+                    default:
+                        return null;
+                }
+            };
+        }
+
+        if ($name === 'Calc') {
+            $typeConfig['resolveField'] = function($root, $args, $context, ResolveInfo $info) {
+                switch($info->fieldName) {
+                    case 'sum':
+                        return $args['x'] + $args['y'];
                     default:
                         return null;
                 }
