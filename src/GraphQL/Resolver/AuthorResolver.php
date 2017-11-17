@@ -3,6 +3,7 @@
 namespace App\GraphQL\Resolver;
 
 use App\GraphQL\DataProvider;
+use GraphQL\Executor\Executor;
 use GraphQL\Type\Definition\ResolveInfo;
 
 class AuthorResolver implements Resolver
@@ -17,11 +18,10 @@ class AuthorResolver implements Resolver
 
     public function __invoke($author, $args, $context, ResolveInfo $info)
     {
-        switch ($info->fieldName) {
-            case 'articles':
-                return $this->dataProvider->findArticlesByAuthorId($author['id']);
-            default:
-                return $author[$info->fieldName];
+        if ('articles' === $info->fieldName) {
+            return $this->dataProvider->findArticlesByAuthorId($author['id']);
         }
+
+        return Executor::defaultFieldResolver($author, $args, $context, $info);
     }
 }

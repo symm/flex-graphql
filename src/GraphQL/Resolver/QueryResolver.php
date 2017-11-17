@@ -18,13 +18,14 @@ class QueryResolver implements Resolver
 
     public function __invoke($query, $args, $context, ResolveInfo $info)
     {
-        switch($info->fieldName) {
-            case 'authors':
-                return $this->dataProvider->allAuthors();
-            case 'articles':
-                return $this->dataProvider->allArticles();
-            default:
-                return null;
+        if ('authors' === $info->fieldName) {
+            return $this->dataProvider->allAuthors();
         }
+
+        if ('articles' === $info->fieldName) {
+            return $this->dataProvider->allArticles();
+        }
+
+        return null;
     }
 }
