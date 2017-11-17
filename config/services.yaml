@@ -26,3 +26,10 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\GraphQL\DataProvider:
+        public: true
+
+    App\GraphQL\Resolver\:
+        resource: '../src/GraphQL/Resolver'
+        public: true

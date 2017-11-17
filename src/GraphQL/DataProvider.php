@@ -2,7 +2,6 @@
 
 namespace App\GraphQL;
 
-
 class DataProvider
 {
     public static $authors =
@@ -10,12 +9,10 @@ class DataProvider
             [
                 'id' => '1',
                 'name' => 'Dave',
-                // 'articleIds' => ['1']
             ],
             [
                 'id' => '2',
                 'name' => 'Rob',
-                //'articleIds' => ['1']
             ]
         ];
 
