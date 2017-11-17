@@ -1,12 +1,31 @@
 schema {
+    # Root query
     query: Query
-    mutation: Calc
 }
 
-type Calc {
-    sum(x: Int, y: Int): Int
+type Author {
+    # Unique ID of the Author
+    id: ID!
+    # The name of the author
+    name: String!
+    # All articles created by the author
+    articles: [Article]
+}
+
+type Article {
+    # Unique ID of the Article
+    id: ID!
+    # The person who created the Article
+    author: Author!
+    # The title of the Article
+    title: String!
+    # The body of the Article
+    content: String!
 }
 
 type Query {
-    echo(message: String): String
+    # All articles in the system
+    articles: [Article]
+    # All authors in the system
+    authors: [Author]
 }

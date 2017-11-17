@@ -18,19 +18,20 @@ use Zend\Diactoros\Response;
 
 class GraphQLController extends Controller
 {
-    /**
-     * @var KernelInterface
-     */
+    /** @var KernelInterface */
     private $kernel;
 
-    public function __construct(KernelInterface $kernel)
+    /** @var TypeConfigDecorator */
+    private $typeConfigDecorator;
+
+    public function __construct(KernelInterface $kernel, TypeConfigDecorator $typeConfigDecorator)
     {
         $this->kernel = $kernel;
+        $this->typeConfigDecorator = $typeConfigDecorator;
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-
         $request = $this->parseJsonMiddleware($request);
 
         $debug = $this->kernel->isDebug() ? Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE  : 0;
@@ -91,6 +92,6 @@ class GraphQLController extends Controller
             file_put_contents($schemaCache, serialize(AST::toArray($document)) );
         }
 
-        return BuildSchema::build($document, new TypeConfigDecorator());
+        return BuildSchema::build($document, $this->typeConfigDecorator);
     }
 }
