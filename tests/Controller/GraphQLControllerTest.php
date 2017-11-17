@@ -28,7 +28,7 @@ class GraphQLControllerTest extends WebTestCase
     {
         $response = $this->client->doQuery('');
 
-        $this->assertContains('Graphcool Playground', $response->getContent());
+        $this->assertContains('GraphQL Playground', $response->getContent());
         $this->assertEquals('text/html; charset=UTF-8', $response->headers->get('content-type'));
     }
 
