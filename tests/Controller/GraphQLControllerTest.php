@@ -67,6 +67,15 @@ class GraphQLControllerTest extends GraphQLTestCase
                     [
                         'id' => '2',
                         'author' => [
+                            'id' => '1',
+                            'name' => 'Dave',
+                        ],
+                        'title' => 'Another',
+                        'content' => 'Something',
+                    ],
+                    [
+                        'id' => '3',
+                        'author' => [
                             'id' => '2',
                             'name' => 'Rob',
                         ],
@@ -132,8 +141,12 @@ class GraphQLControllerTest extends GraphQLTestCase
                                 'id' => '1',
                                 'title' => "Dave's Article",
                                 'content' => 'All about Dave',
-                            ]
-
+                            ],
+                            [
+                                'id' => '2',
+                                'title' => 'Another',
+                                'content' => 'Something',
+                            ],
                         ]
                     ],
                     [
@@ -141,7 +154,7 @@ class GraphQLControllerTest extends GraphQLTestCase
                         'name' => 'Rob',
                         'articles' => [
                             [
-                                'id' => '2',
+                                'id' => '3',
                                 'title' => "Rob's Article",
                                 'content' => 'All about Rob',
                             ]
