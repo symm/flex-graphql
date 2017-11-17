@@ -11,7 +11,7 @@ class GraphQLControllerTest extends WebTestCase
     /** @var GraphQLTestClient */
     private $client;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->client = new GraphQLTestClient(static::createClient());
@@ -24,16 +24,12 @@ class GraphQLControllerTest extends WebTestCase
         $this->assertNotNull($response->headers->get('date'));
     }
 
-    public function testEmptyQuery()
+    public function testEmptyQueryLoadsThePlayground()
     {
         $response = $this->client->doQuery('');
 
-        $this->assertDefaultHeaders($response);
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertJsonStringEqualsJsonString(
-            '{"errors":[{"message":"GraphQL Request must include at least one of those two parameters: \"query\" or \"queryId\"","category":"request"}]}',
-            $response->getContent()
-        );
+        $this->assertContains('Graphcool Playground', $response->getContent());
+        $this->assertEquals('text/html; charset=UTF-8', $response->headers->get('content-type'));
     }
 
     public function greetingProvider(): array
