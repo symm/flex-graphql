@@ -4,7 +4,7 @@ namespace App\GraphQL;
 
 class DataProvider
 {
-    public static $authors =
+    private $authors =
         [
             [
                 'id' => '1',
@@ -16,7 +16,7 @@ class DataProvider
             ]
         ];
 
-    public static $articles = [
+    private $articles = [
         [
             'id' => '1',
             'title' => 'Dave\'s Article',
@@ -31,9 +31,9 @@ class DataProvider
         ]
     ];
 
-    public static function findAuthorById($id)
+    public function findAuthorById($id)
     {
-        foreach (static::$authors as $author) {
+        foreach ($this->authors as $author) {
             if ($author['id'] === $id) {
                 return $author;
             }
@@ -42,22 +42,22 @@ class DataProvider
         return null;
     }
 
-    public static function findArticlesByAuthorId($authorId)
+    public function findArticlesByAuthorId($authorId)
     {
-        $matches = array_filter(static::$articles, function($article) use ($authorId){
+        $matches = array_filter($this->articles, function($article) use ($authorId){
             return $article['authorId'] === $authorId;
         });
 
         return $matches;
     }
 
-    public static function allAuthors(): array
+    public function allAuthors(): array
     {
-        return static::$authors;
+        return $this->authors;
     }
 
-    public static function allArticles(): array
+    public function allArticles(): array
     {
-        return static::$articles;
+        return $this->articles;
     }
 }

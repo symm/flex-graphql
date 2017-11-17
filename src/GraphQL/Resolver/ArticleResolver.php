@@ -7,10 +7,18 @@ use GraphQL\Type\Definition\ResolveInfo;
 
 class ArticleResolver implements Resolver
 {
+    /** @var DataProvider */
+    private $dataProvider;
+
+    public function __construct(DataProvider $dataProvider)
+    {
+        $this->dataProvider = $dataProvider;
+    }
+
     public function __invoke($article, $args, $context, ResolveInfo $info) {
             switch ($info->fieldName) {
                 case 'author':
-                    return DataProvider::findAuthorById($article['authorId']);
+                    return $this->dataProvider->findAuthorById($article['authorId']);
                 default:
                     return $article[$info->fieldName];
             }

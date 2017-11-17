@@ -8,13 +8,21 @@ use GraphQL\Type\Definition\ResolveInfo;
 
 class QueryResolver implements Resolver
 {
+    /** @var DataProvider */
+    private $dataProvider;
+
+    public function __construct(DataProvider $dataProvider)
+    {
+        $this->dataProvider = $dataProvider;
+    }
+
     public function __invoke($query, $args, $context, ResolveInfo $info)
     {
         switch($info->fieldName) {
             case 'authors':
-                return DataProvider::allAuthors();
+                return $this->dataProvider->allAuthors();
             case 'articles':
-                return DataProvider::allArticles();
+                return $this->dataProvider->allArticles();
             default:
                 return null;
         }
