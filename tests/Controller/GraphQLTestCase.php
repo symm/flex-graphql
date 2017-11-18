@@ -60,4 +60,29 @@ class GraphQLTestCase extends WebTestCase
 
         return $this;
     }
+
+    protected function assertResponseHasErrors(Response $response)
+    {
+        $this->seeJsonStructure([
+            'errors' => [
+                '*' => [
+                    'message',
+                    'category',
+                ]
+            ]
+        ], $this->decodeResponse($response));
+    }
+
+    protected function assertErrorMessagePresent(string $message, string $category, Response $response)
+    {
+        $decodedResponse = $this->decodeResponse($response);
+        $this->assertContains(
+            [
+                'message' => $message,
+                'category' => $category,
+            ],
+            $decodedResponse['errors']
+        );
+
+    }
 }
