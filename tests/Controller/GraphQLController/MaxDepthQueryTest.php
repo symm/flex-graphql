@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\GraphQLController;
+
+use App\Tests\Controller\GraphQLTestCase;
 
 class MaxDepthQueryTest extends GraphQLTestCase
 {
-
     public function testErrorsWhenTheQueryGoesTooDeep()
     {
         $response = $this->client->doQuery('

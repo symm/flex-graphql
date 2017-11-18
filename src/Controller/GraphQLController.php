@@ -34,7 +34,7 @@ class GraphQLController extends Controller
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        $request = $this->parseJsonMiddleware($request);
+        $request = $this->jsonBodyMiddleware($request);
 
         $config = [
             'debug' => $this->kernel->isDebug() ? Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE  : 0,
@@ -57,7 +57,7 @@ class GraphQLController extends Controller
 
     // TODO: Implement as proper middleware ala
     // https://github.com/zendframework/zend-expressive-helpers/blob/35126f5c7b71d56d5f1c18316d0bb67eef07aad9/src/BodyParams/BodyParamsMiddleware.php
-    private function parseJsonMiddleware(ServerRequestInterface $request): ServerRequestInterface
+    private function jsonBodyMiddleware(ServerRequestInterface $request): ServerRequestInterface
     {
         $nonBodyRequests = [
             'GET',
