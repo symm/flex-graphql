@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\GraphQL\TypeConfigDecorator;
+use App\Middleware\JsonBodyDecoder;
 use GraphQL\Error\Debug;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
@@ -34,57 +35,42 @@ class GraphQLController extends Controller
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        $request = $this->jsonBodyMiddleware($request);
+        $middleware = new JsonBodyDecoder();
+        $request = $middleware($request);
 
-        $config = [
-            'debug' => $this->kernel->isDebug() ? Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE  : 0,
-            'schemaFile' => __DIR__ . '/../../config/schema.graphqls',
-            'maxQueryDepth' => 11,
-        ];
+        $config = $this->getConfig();
+        $context = $this->getContext();
 
-        // http://webonyx.github.io/graphql-php/executing-queries/#server-configuration-options
         $server = new StandardServer([
             'schema' => $this->getSchema($config['schemaFile']),
             'debug'  => $config['debug'],
+            'context' => $context,
+            'validationRules' => [
+                new QueryDepth($config['maxQueryDepth'])
+            ],
+            'queryBatching' => $config['queryBatching'],
         ]);
-
-        DocumentValidator::addRule(new QueryDepth($config['maxQueryDepth']));
 
         $response = new Response();
 
         return $server->processPsrRequest($request, $response, $response->getBody());
     }
 
-    // TODO: Implement as proper middleware ala
-    // https://github.com/zendframework/zend-expressive-helpers/blob/35126f5c7b71d56d5f1c18316d0bb67eef07aad9/src/BodyParams/BodyParamsMiddleware.php
-    private function jsonBodyMiddleware(ServerRequestInterface $request): ServerRequestInterface
+    private function getConfig(): array
     {
-        $nonBodyRequests = [
-            'GET',
-            'HEAD',
-            'OPTIONS',
+        return [
+            'debug' => $this->kernel->isDebug() ? Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE  : 0,
+            'schemaFile' => __DIR__ . '/../../config/schema.graphqls',
+            'maxQueryDepth' => 11,
+            'queryBatching' => true,
         ];
+    }
 
-        if (in_array($request->getMethod(), $nonBodyRequests, false)) {
-            return $request;
-        }
-        $contentType = $request->getHeaderLine('Content-Type');
-        $parts = explode(';', $contentType);
-        $mime = array_shift($parts);
-        $isJson = (bool) preg_match('#[/+]json$#', trim($mime));
-
-        if ($isJson) {
-            $rawBody = (string) $request->getBody();
-            $parsedBody = json_decode($rawBody, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \InvalidArgumentException('Error when parsing JSON request body: ' . json_last_error_msg());
-            }
-            $request = $request
-                ->withAttribute('rawBody', $rawBody)
-                ->withParsedBody($parsedBody);
-        }
-
-        return $request;
+    private function getContext(): array
+    {
+        return [
+            'user' => null,
+        ];
     }
 
     private function getSchema(string $schemaFile): Schema

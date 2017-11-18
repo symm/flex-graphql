@@ -13,8 +13,6 @@ class GraphQLTestCase extends WebTestCase
 
     public function setUp(): void
     {
-        parent::setUp();
-
         $this->client = new GraphQLTestClient(static::createClient());
     }
 
@@ -84,5 +82,10 @@ class GraphQLTestCase extends WebTestCase
             $decodedResponse['errors']
         );
 
+    }
+
+    protected function assertContentType(string $expectedContentType, Response $response)
+    {
+        $this->assertEquals($expectedContentType, $response->headers->get('content-type'));
     }
 }

@@ -11,6 +11,6 @@ class EmptyQueryTest extends GraphQLTestCase
         $response = $this->client->doQuery('');
 
         $this->assertContains('GraphQL Playground', $response->getContent());
-        $this->assertEquals('text/html; charset=UTF-8', $response->headers->get('content-type'));
+        $this->assertContentType('text/html; charset=UTF-8', $response);
     }
 }
