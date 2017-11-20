@@ -60,6 +60,13 @@ class DataProvider
         return null;
     }
 
+    public function findAuthorsById($ids)
+    {
+        return array_filter($this->authors, function($author) use ($ids){
+            return in_array($author['id'], $ids, false);
+        });
+    }
+
     public function findArticlesByAuthorId($authorId)
     {
         $this->logger->debug('findArticlesByAuthorId ' . $authorId);

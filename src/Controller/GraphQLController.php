@@ -5,13 +5,12 @@ namespace App\Controller;
 use App\GraphQL\TypeConfigDecorator;
 use App\Middleware\JsonBodyDecoder;
 use GraphQL\Error\Debug;
+use Overblog\DataLoader\Promise\Adapter\Webonyx\GraphQL\SyncPromiseAdapter;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\AST;
 use GraphQL\Utils\BuildSchema;
-use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\QueryDepth;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -49,6 +48,7 @@ class GraphQLController extends Controller
                 new QueryDepth($config['maxQueryDepth'])
             ],
             'queryBatching' => $config['queryBatching'],
+            'promiseAdapter' => new SyncPromiseAdapter(),
         ]);
 
         $response = new Response();
