@@ -2,21 +2,19 @@
 
 namespace App\GraphQL\Resolver;
 
-use App\GraphQL\DataProvider;
+use App\GraphQL\DataLoader\BatchAuthorLoader;
+use App\Repository\AuthorRepository;
 use GraphQL\Executor\Executor;
 use GraphQL\Type\Definition\ResolveInfo;
-use Overblog\DataLoader\DataLoader;
-use Overblog\PromiseAdapter\Adapter\WebonyxGraphQLSyncPromiseAdapter;
 
 class ArticleResolver implements Resolver
 {
     private $authorLoader;
-    private $dataProvider;
 
-    public function __construct(DataProvider $dataProvider)
+    public function __construct(AuthorRepository $authorRepository)
     {
-        $this->dataProvider = $dataProvider;
-        $this->authorLoader = $this->getAuthorDataLoader();
+        // TODO: inject from service container
+        $this->authorLoader = BatchAuthorLoader::factory(Executor::getPromiseAdapter(), $authorRepository);
     }
 
     public function __invoke($article, $args, $context, ResolveInfo $info)
@@ -27,19 +25,5 @@ class ArticleResolver implements Resolver
 
         return Executor::defaultFieldResolver($article, $args, $context, $info);
     }
-
-    private function getAuthorDataLoader()
-    {
-        $dataProvider = $this->dataProvider;
-
-        $graphQLPromiseAdapter = Executor::getPromiseAdapter();
-        $dataLoaderPromiseAdapter = new WebonyxGraphQLSyncPromiseAdapter($graphQLPromiseAdapter);
-
-        return new DataLoader(function($authorIds) use ($dataLoaderPromiseAdapter, $dataProvider) {
-            $authors = $dataProvider->findAuthorsById($authorIds);
-
-            return $dataLoaderPromiseAdapter->createAll($authors);
-
-        }, $dataLoaderPromiseAdapter);
-    }
 }
+

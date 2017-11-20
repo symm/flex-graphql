@@ -3,27 +3,32 @@
 
 namespace App\GraphQL\Resolver;
 
-use App\GraphQL\DataProvider;
+use App\Repository\ArticleRepository;
+use App\Repository\AuthorRepository;
 use GraphQL\Type\Definition\ResolveInfo;
 
 class QueryResolver implements Resolver
 {
-    /** @var DataProvider */
-    private $dataProvider;
+    /** @var ArticleRepository */
+    private $articleRepository;
 
-    public function __construct(DataProvider $dataProvider)
+    /** @var AuthorRepository */
+    private $authorRepository;
+
+    public function __construct(ArticleRepository $articleRepository, AuthorRepository $authorRepository)
     {
-        $this->dataProvider = $dataProvider;
+        $this->articleRepository = $articleRepository;
+        $this->authorRepository = $authorRepository;
     }
 
     public function __invoke($query, $args, $context, ResolveInfo $info)
     {
         if ('authors' === $info->fieldName) {
-            return $this->dataProvider->allAuthors();
+            return $this->authorRepository->allAuthors();
         }
 
         if ('articles' === $info->fieldName) {
-            return $this->dataProvider->allArticles();
+            return $this->articleRepository->allArticles();
         }
 
         return null;
