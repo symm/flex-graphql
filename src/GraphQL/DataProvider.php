@@ -2,18 +2,8 @@
 
 namespace App\GraphQL;
 
-use Psr\Log\LoggerInterface;
-
 class DataProvider
 {
-    /** @var LoggerInterface */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     private $authors =
         [
             [
@@ -49,8 +39,6 @@ class DataProvider
 
     public function findAuthorById($id)
     {
-        $this->logger->debug('findAuthorById ' . $id);
-
         foreach ($this->authors as $author) {
             if ($author['id'] === $id) {
                 return $author;
@@ -69,8 +57,6 @@ class DataProvider
 
     public function findArticlesByAuthorId($authorId)
     {
-        $this->logger->debug('findArticlesByAuthorId ' . $authorId);
-
         $matches = array_filter($this->articles, function($article) use ($authorId){
             return $article['authorId'] === $authorId;
         });
@@ -80,13 +66,11 @@ class DataProvider
 
     public function allAuthors(): array
     {
-        $this->logger->debug('allAuthors');
         return $this->authors;
     }
 
     public function allArticles(): array
     {
-        $this->logger->debug('allArticles');
         return $this->articles;
     }
 }
