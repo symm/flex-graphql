@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "fa0ab5e71069df5ad7bef8ccaab21780",
+    "content-hash": "8d49f908536fe100c8c11b832d885d53",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -3288,6 +3288,68 @@
             "time": "2017-11-06T16:02:17+00:00"
         },
         {
+            "name": "symfony/phpunit-bridge",
+            "version": "v4.0.0-RC1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/phpunit-bridge.git",
+                "reference": "cce9da8de6a15211e4f9797d455033b7de74612d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/cce9da8de6a15211e4f9797d455033b7de74612d",
+                "reference": "cce9da8de6a15211e4f9797d455033b7de74612d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "conflict": {
+                "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0"
+            },
+            "suggest": {
+                "ext-zip": "Zip support is required when using bin/simple-phpunit",
+                "symfony/debug": "For tracking deprecated interfaces usages at runtime with DebugClassLoader"
+            },
+            "bin": [
+                "bin/simple-phpunit"
+            ],
+            "type": "symfony-bridge",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Bridge\\PhpUnit\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony PHPUnit Bridge",
+            "homepage": "https://symfony.com",
+            "time": "2017-11-21T09:59:36+00:00"
+        },
+        {
             "name": "symfony/polyfill-mbstring",
             "version": "v1.6.0",
             "source": {
@@ -4005,6 +4067,7 @@
         "symfony/browser-kit": 5,
         "symfony/console": 5,
         "symfony/framework-bundle": 5,
+        "symfony/phpunit-bridge": 5,
         "symfony/web-server-bundle": 5,
         "symfony/yaml": 5,
         "symfony/dotenv": 5

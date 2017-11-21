@@ -14,6 +14,8 @@
         <env name="APP_DEBUG" value="1" />
         <env name="APP_SECRET" value="s$cretf0rt3st" />
         <!-- define your env variables for the test env here -->
+        <!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="/foobar/" /> -->
+
     </php>
 
     <testsuites>
@@ -21,4 +23,8 @@
             <directory>tests/</directory>
         </testsuite>
     </testsuites>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+    </listeners>
 </phpunit>

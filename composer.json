@@ -11,6 +11,7 @@
         "symfony/console": "v4.0.0-RC1",
         "symfony/framework-bundle": "v4.0.0-RC1",
         "symfony/monolog-bundle": "^3.1",
+        "symfony/phpunit-bridge": "^4.0@RC",
         "symfony/psr-http-message-bridge": "^1.0",
         "symfony/web-server-bundle": "v4.0.0-RC1",
         "symfony/yaml": "v4.0.0-RC1",
@@ -49,8 +50,11 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
+        "serve": [
+            "bin/console server:run"
+        ],
         "test": [
-            "phpunit"
+            "vendor/bin/phpunit"
         ]
     },
     "conflict": {
