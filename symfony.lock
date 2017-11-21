@@ -26,9 +26,6 @@
             "ref": "5ec5bb098bc693cd92f03390dd488ea0847cfcc7"
         }
     },
-    "symfony/stopwatch": {
-        "version": "v3.3.10"
-    },
     "symfony/routing": {
         "version": "3.3",
         "recipe": {
@@ -61,12 +58,6 @@
     },
     "symfony/config": {
         "version": "v3.3.10"
-    },
-    "symfony/class-loader": {
-        "version": "v3.3.10"
-    },
-    "symfony/polyfill-apcu": {
-        "version": "v1.6.0"
     },
     "psr/simple-cache": {
         "version": "1.0.0"
@@ -253,5 +244,11 @@
             "version": "4.0",
             "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
         }
+    },
+    "paragonie/random_compat": {
+        "version": "v2.0.11"
+    },
+    "symfony/polyfill-php70": {
+        "version": "v1.6.0"
     }
 }
