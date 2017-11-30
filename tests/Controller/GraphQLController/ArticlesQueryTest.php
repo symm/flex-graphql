@@ -45,40 +45,6 @@ class ArticlesQueryTest extends GraphQLTestCase
             $decoded
         );
 
-        $expected = [
-            'data' => [
-                'articles' => [
-                    [
-                        'id' => '1',
-                        'author' => [
-                            'id' => '1',
-                            'name' => 'Dave',
-                        ],
-                        'title' => "Dave's Article",
-                        'content' => 'All about Dave',
-                    ],
-                    [
-                        'id' => '2',
-                        'author' => [
-                            'id' => '1',
-                            'name' => 'Dave',
-                        ],
-                        'title' => 'Another',
-                        'content' => 'Something',
-                    ],
-                    [
-                        'id' => '3',
-                        'author' => [
-                            'id' => '2',
-                            'name' => 'Rob',
-                        ],
-                        'title' => "Rob's Article",
-                        'content' => 'All about Rob',
-                    ]
-                ]
-            ]
-        ];
-
-        $this->assertEquals($expected, $decoded, 'Response content did not match');
+        $this->assertCount(100, $decoded['data']['articles']);
     }
 }

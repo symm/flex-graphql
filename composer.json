@@ -5,12 +5,14 @@
         "php": "^7.0.8",
         "overblog/dataloader-php": "^0.5.2",
         "phpunit/phpunit": "^6.4",
+        "ramsey/uuid-doctrine": "^1.4",
         "react/promise": "^2.5",
         "sensio/framework-extra-bundle": "^5.0",
         "symfony/browser-kit": "v4.0.0",
         "symfony/console": "v4.0.0",
         "symfony/framework-bundle": "v4.0.0",
         "symfony/monolog-bundle": "^3.1",
+        "symfony/orm-pack": "^1.0",
         "symfony/phpunit-bridge": "v4.0.0",
         "symfony/psr-http-message-bridge": "^1.0",
         "symfony/web-server-bundle": "v4.0.0",
@@ -19,8 +21,10 @@
         "zendframework/zend-diactoros": "^1.6"
     },
     "require-dev": {
-        "symfony/flex": "^1.0",
-        "symfony/dotenv": "v4.0.0"
+        "doctrine/doctrine-fixtures-bundle": "^3.0",
+        "fzaninotto/faker": "^1.7",
+        "symfony/dotenv": "v4.0.0",
+        "symfony/flex": "^1.0"
     },
     "config": {
         "preferred-install": {

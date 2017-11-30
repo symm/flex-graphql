@@ -2,9 +2,15 @@
 
 namespace App\Tests\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Tests\GraphQLTestClient;
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\Common\DataFixtures\Loader;
 
 class GraphQLTestCase extends WebTestCase
 {
@@ -14,6 +20,46 @@ class GraphQLTestCase extends WebTestCase
     public function setUp(): void
     {
         $this->client = new GraphQLTestClient(static::createClient());
+        $this->refreshDatabaseSchema();
+        $this->loadFixtures();
+    }
+
+    protected function loadFixtures()
+    {
+        $loader = new Loader();
+        $loader->addFixture(new AppFixtures());
+
+        $purger = new ORMPurger();
+        $executor = new ORMExecutor($this->getEntityManager(), $purger);
+        $executor->execute($loader->getFixtures());
+    }
+
+    protected function refreshDatabaseSchema()
+    {
+        $em = $this->getEntityManager();
+
+        $metadata = $em->getMetadataFactory()->getAllMetadata();
+        if (!empty($metadata)) {
+            $tool = new SchemaTool($em);
+            $tool->updateSchema($metadata);
+        }
+    }
+
+    protected function getRepository(string $className)
+    {
+        $em = $this->getEntityManager();
+
+        return $em->getRepository($className);
+    }
+
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->getService('doctrine.orm.entity_manager');
+    }
+
+    protected function getService(string $serviceName)
+    {
+        return static::$kernel->getContainer()->get($serviceName);
     }
 
     protected function assertDefaultHeaders(Response $response): void

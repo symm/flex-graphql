@@ -1,43 +1,49 @@
 <?php declare(strict_types=1);
 
-
 namespace App\Repository;
 
+use App\Entity\Author;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 
-class AuthorRepository
+class AuthorRepository extends ServiceEntityRepository
 {
-    private $authors =
-        [
-            [
-                'id' => '1',
-                'name' => 'Dave',
-            ],
-            [
-                'id' => '2',
-                'name' => 'Rob',
-            ]
-        ];
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
+    {
+        parent::__construct($registry, Author::class);
+        $this->logger = $logger;
+    }
 
     public function findAuthorById($id)
     {
-        foreach ($this->authors as $author) {
-            if ($author['id'] === $id) {
-                return $author;
-            }
-        }
-
-        return null;
+        return $this->findOneBy(['id' => $id]);
     }
 
     public function findAuthorsById($ids)
     {
-        return array_filter($this->authors, function($author) use ($ids){
-            return in_array($author['id'], $ids, false);
-        });
+        $authors = $this->findById($ids);
+
+        return $this->mapAuthors($authors);
     }
 
     public function allAuthors(): array
     {
-        return $this->authors;
+        $authors = $this->findAll();
+
+        return $this->mapAuthors($authors);
+    }
+
+    private function mapAuthors(array $authors)
+    {
+        return array_map(function(Author $author){
+            return [
+                'id' => $author->getId()->toString(),
+                'name' => $author->getName(),
+            ];
+        }, $authors);
     }
 }
