@@ -7,22 +7,21 @@
         "phpunit/phpunit": "^6.4",
         "react/promise": "^2.5",
         "sensio/framework-extra-bundle": "^5.0",
-        "symfony/browser-kit": "v4.0.0-RC1",
-        "symfony/console": "v4.0.0-RC1",
-        "symfony/framework-bundle": "v4.0.0-RC1",
+        "symfony/browser-kit": "v4.0.0",
+        "symfony/console": "v4.0.0",
+        "symfony/framework-bundle": "v4.0.0",
         "symfony/monolog-bundle": "^3.1",
-        "symfony/phpunit-bridge": "^4.0@RC",
+        "symfony/phpunit-bridge": "v4.0.0",
         "symfony/psr-http-message-bridge": "^1.0",
-        "symfony/web-server-bundle": "v4.0.0-RC1",
-        "symfony/yaml": "v4.0.0-RC1",
+        "symfony/web-server-bundle": "v4.0.0",
+        "symfony/yaml": "v4.0.0",
         "webonyx/graphql-php": "^0.11.2",
         "zendframework/zend-diactoros": "^1.6"
     },
     "require-dev": {
         "symfony/flex": "^1.0",
-        "symfony/dotenv": "v4.0.0-RC1"
+        "symfony/dotenv": "v4.0.0"
     },
-    "minimum-stability": "RC",
     "config": {
         "preferred-install": {
             "*": "dist"
