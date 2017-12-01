@@ -17,7 +17,7 @@ class AppFixtures extends Fixture
         $faker = Factory::create();
         $faker->seed(1234);
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $author = new Author($faker->name());
 
             $article = new Article($author, $faker->paragraph(), $faker->paragraph());

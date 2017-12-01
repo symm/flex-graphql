@@ -48,6 +48,6 @@ class AuthorsQueryTest extends GraphQLTestCase
             $decoded
         );
 
-        $this->assertCount(100, $decoded['data']['authors']);
+        $this->assertCount(10, $decoded['data']['authors']);
     }
 }

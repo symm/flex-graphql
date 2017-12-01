@@ -45,6 +45,6 @@ class ArticlesQueryTest extends GraphQLTestCase
             $decoded
         );
 
-        $this->assertCount(100, $decoded['data']['articles']);
+        $this->assertCount(10, $decoded['data']['articles']);
     }
 }
