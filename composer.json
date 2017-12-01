@@ -24,7 +24,8 @@
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "fzaninotto/faker": "^1.7",
         "symfony/dotenv": "v4.0.0",
-        "symfony/flex": "^1.0"
+        "symfony/flex": "^1.0",
+        "symfony/var-dumper": "^4.0"
     },
     "config": {
         "preferred-install": {

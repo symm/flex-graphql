@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\GraphQL\TypeConfigDecorator;
 use App\Middleware\JsonBodyDecoder;
+use App\Repository\AuthorRepository;
 use GraphQL\Error\Debug;
 use Overblog\DataLoader\Promise\Adapter\Webonyx\GraphQL\SyncPromiseAdapter;
 use GraphQL\Language\Parser;
@@ -25,11 +26,14 @@ class GraphQLController extends Controller
 
     /** @var TypeConfigDecorator */
     private $typeConfigDecorator;
+    /** @var AuthorRepository */
+    private $authorRepository;
 
-    public function __construct(KernelInterface $kernel, TypeConfigDecorator $typeConfigDecorator)
+    public function __construct(KernelInterface $kernel, TypeConfigDecorator $typeConfigDecorator, AuthorRepository $authorRepository)
     {
         $this->kernel = $kernel;
         $this->typeConfigDecorator = $typeConfigDecorator;
+        $this->authorRepository = $authorRepository;
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface
@@ -68,8 +72,11 @@ class GraphQLController extends Controller
 
     private function getContext(): array
     {
+        // TODO: log user in properly
+        $currentUser = $this->authorRepository->findOneBy([]);
+
         return [
-            'user' => null,
+            'user' => $currentUser,
         ];
     }
 

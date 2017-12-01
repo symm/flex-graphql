@@ -1,8 +1,11 @@
 schema {
     # Root query
     query: Query
+    # Root Mutation
+    mutation: Mutation
 }
 
+# An Author
 type Author {
     # Unique ID of the Author
     id: ID!
@@ -12,6 +15,7 @@ type Author {
     articles: [Article]
 }
 
+# An Article
 type Article {
     # Unique ID of the Article
     id: ID!
@@ -23,9 +27,30 @@ type Article {
     content: String!
 }
 
+# Root Query
 type Query {
     # All articles in the system
     articles: [Article]
     # All authors in the system
     authors: [Author]
+}
+
+# Root mutation
+type Mutation {
+    # Create an Article
+    createArticle(input: CreateArticleInput!): CreateArticlePayload
+}
+
+# The input for creating an article
+input CreateArticleInput {
+    # The title of the Article
+    title: String!
+    #The content of the Article
+    content: String!
+}
+
+# The result of a createArticle Mutation
+type CreateArticlePayload {
+    # The newly created article
+    article: Article
 }

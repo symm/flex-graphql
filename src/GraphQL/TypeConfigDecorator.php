@@ -5,6 +5,7 @@ namespace App\GraphQL;
 
 use App\GraphQL\Resolver\ArticleResolver;
 use App\GraphQL\Resolver\AuthorResolver;
+use App\GraphQL\Resolver\MutationResolver;
 use App\GraphQL\Resolver\QueryResolver;
 use Psr\Container\ContainerInterface;
 
@@ -24,6 +25,7 @@ class TypeConfigDecorator
             'Query' => QueryResolver::class,
             'Article' => ArticleResolver::class,
             'Author' => AuthorResolver::class,
+            'Mutation' => MutationResolver::class,
         ];
 
         if (array_key_exists($typeConfig['name'], $resolverMap)) {

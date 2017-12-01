@@ -337,5 +337,11 @@
     },
     "fzaninotto/faker": {
         "version": "v1.7.1"
+    },
+    "symfony/polyfill-php72": {
+        "version": "v1.6.0"
+    },
+    "symfony/var-dumper": {
+        "version": "v4.0.0"
     }
 }
