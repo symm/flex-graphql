@@ -53,7 +53,9 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "serve": [
+        "start": [
+            "bin/console doctrine:migrations:migrate",
+            "bin/console doctrine:fixtures:load",
             "bin/console server:run"
         ],
         "test": [
