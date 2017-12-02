@@ -3,11 +3,14 @@
 namespace App\Tests\Controller;
 
 use App\DataFixtures\AppFixtures;
+use App\Entity\Article;
 use App\Tests\GraphQLTestClient;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\Common\DataFixtures\ReferenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\DataFixtures\Loader;
@@ -16,6 +19,9 @@ class GraphQLTestCase extends WebTestCase
 {
     /** @var GraphQLTestClient */
     protected $client;
+
+    /** @var  ReferenceRepository */
+    private $fixtures;
 
     public function setUp(): void
     {
@@ -29,9 +35,10 @@ class GraphQLTestCase extends WebTestCase
         $loader = new Loader();
         $loader->addFixture(new AppFixtures());
 
-        $purger = new ORMPurger();
-        $executor = new ORMExecutor($this->getEntityManager(), $purger);
+        $executor = new ORMExecutor($this->getEntityManager(), new ORMPurger());
         $executor->execute($loader->getFixtures());
+
+        $this->fixtures = $executor->getReferenceRepository();
     }
 
     protected function refreshDatabaseSchema()
@@ -133,5 +140,16 @@ class GraphQLTestCase extends WebTestCase
     protected function assertContentType(string $expectedContentType, Response $response)
     {
         $this->assertEquals($expectedContentType, $response->headers->get('content-type'));
+    }
+
+    protected function findFixtureById(string $entityName, string $entityId)
+    {
+        foreach ($this->fixtures->getReferences() as $reference) {
+            if ($reference instanceof $entityName) {
+                if ($reference->getId()->equals(Uuid::fromString($entityId))) {
+                    return $reference;
+                }
+            }
+        }
     }
 }

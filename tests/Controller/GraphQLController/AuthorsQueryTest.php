@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\GraphQLController;
 
+use App\Entity\Author;
 use App\Tests\Controller\GraphQLTestCase;
 
 class AuthorsQueryTest extends GraphQLTestCase
@@ -48,6 +49,13 @@ class AuthorsQueryTest extends GraphQLTestCase
             $decoded
         );
 
-        $this->assertCount(10, $decoded['data']['authors']);
+        foreach ($decoded['data']['authors'] as $author) {
+            /** @var Author $fixture */
+            $fixture = $this->findFixtureById(Author::class, $author['id']);
+
+            $this->assertEquals($fixture->getId()->toString(), $author['id'], 'Author ID did not match');
+            $this->assertEquals($fixture->getName(), $author['name'], 'Author name did not match');
+            $this->assertCount($fixture->getArticles()->count(), $author['articles'], 'Article count did not match');
+        }
     }
 }

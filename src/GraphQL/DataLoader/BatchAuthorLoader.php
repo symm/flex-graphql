@@ -2,11 +2,14 @@
 
 namespace App\GraphQL\DataLoader;
 
+use App\Entity\Author;
 use App\Repository\AuthorRepository;
+use Doctrine\Common\Collections\Collection;
 use GraphQL\Executor\Promise\PromiseAdapter;
 use Overblog\DataLoader\DataLoader;
 use Overblog\PromiseAdapter\Adapter\WebonyxGraphQLSyncPromiseAdapter;
 use Overblog\PromiseAdapter\PromiseAdapterInterface;
+use Ramsey\Uuid\Uuid;
 
 class BatchAuthorLoader
 {
@@ -23,7 +26,17 @@ class BatchAuthorLoader
     {
         $authors = $this->repo->findAuthorsById($authorIds);
 
-        return $this->promiseAdapter->createAll($authors);
+        // Re-sort as doctrine does not return the authors in the same order as the $authorsId
+        $result = [];
+        foreach ($authorIds as $authorId) {
+            foreach ($authors as $author) {
+                if ($author['id'] === $authorId) {
+                    $result[] = $author;
+                }
+            }
+        }
+
+        return $this->promiseAdapter->createAll($result);
     }
 
     public static function factory(PromiseAdapter $promiseAdapter, AuthorRepository $repo): DataLoader

@@ -19,8 +19,11 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 10; $i++) {
             $author = new Author($faker->name());
+            $this->setReference('author-' . $i, $author);
 
             $article = new Article($author, $faker->paragraph(), $faker->paragraph());
+            $this->setReference('article-' . $i, $article);
+
 
             $manager->persist($author);
             $manager->persist($article);

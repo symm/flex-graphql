@@ -39,9 +39,11 @@ class Article
     public function __construct(Author $author, string $title, string $content)
     {
         $this->id = Uuid::uuid4();
-        $this->author = $author;
         $this->title = $title;
         $this->content = $content;
+
+        $this->author = $author;
+        $author->getArticles()->add($this);
     }
 
     public function getId(): UuidInterface
