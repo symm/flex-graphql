@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests;
 
@@ -40,22 +42,22 @@ class GraphQLTestClient
             $payload['variables'] = $variables;
         }
 
-        if ($method === 'GET') {
-            $queryString = '?' . http_build_query($payload);
+        if ('GET' === $method) {
+            $queryString = '?'.http_build_query($payload);
         }
 
-        if ($method === 'POST') {
+        if ('POST' === $method) {
             $content = json_encode($payload);
         }
 
         $this->client->request(
             $method,
-            '/' . $queryString,
+            '/'.$queryString,
             [],
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_USER_AGENT' => 'GraphQL Test Client'
+                'HTTP_USER_AGENT' => 'GraphQL Test Client',
             ],
             $content
         );

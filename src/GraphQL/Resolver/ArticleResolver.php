@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\GraphQL\Resolver;
 
@@ -26,4 +28,3 @@ class ArticleResolver implements Resolver
         return Executor::defaultFieldResolver($article, $args, $context, $info);
     }
 }
-

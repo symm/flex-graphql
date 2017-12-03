@@ -1,7 +1,8 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\GraphQL;
-
 
 use App\GraphQL\Resolver\ArticleResolver;
 use App\GraphQL\Resolver\AuthorResolver;

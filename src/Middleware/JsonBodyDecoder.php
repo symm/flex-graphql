@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Middleware;
 
@@ -25,8 +27,8 @@ class JsonBodyDecoder
         if ($isJson) {
             $rawBody = (string) $request->getBody();
             $parsedBody = json_decode($rawBody, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \InvalidArgumentException('Error when parsing JSON request body: ' . json_last_error_msg());
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new \InvalidArgumentException('Error when parsing JSON request body: '.json_last_error_msg());
             }
             $request = $request
                 ->withAttribute('rawBody', $rawBody)

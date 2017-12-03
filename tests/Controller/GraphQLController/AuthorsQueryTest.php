@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Controller\GraphQLController;
 
@@ -7,7 +9,6 @@ use App\Tests\Controller\GraphQLTestCase;
 
 class AuthorsQueryTest extends GraphQLTestCase
 {
-
     public function testAuthorsQuery()
     {
         $response = $this->client->doQuery('
@@ -29,7 +30,8 @@ class AuthorsQueryTest extends GraphQLTestCase
 
         $decoded = $this->decodeResponse($response);
 
-        $this->seeJsonStructure([
+        $this->seeJsonStructure(
+            [
             'data' => [
                 'authors' => [
                     '*' => [
@@ -40,11 +42,11 @@ class AuthorsQueryTest extends GraphQLTestCase
                                 'id',
                                 'title',
                                 'content',
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
             $decoded
         );

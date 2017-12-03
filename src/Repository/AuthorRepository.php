@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -39,7 +41,7 @@ class AuthorRepository extends ServiceEntityRepository
 
     private function mapAuthors(array $authors)
     {
-        return array_map(function(Author $author){
+        return array_map(function (Author $author) {
             return [
                 'id' => $author->getId()->toString(),
                 'name' => $author->getName(),

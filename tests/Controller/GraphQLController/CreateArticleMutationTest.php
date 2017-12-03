@@ -1,8 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace App\Tests\Controller\GraphQLController;
-
 
 use App\Tests\Controller\GraphQLTestCase;
 
@@ -20,11 +20,11 @@ class CreateArticleMutationTest extends GraphQLTestCase
             }
           }
         }
-        ',[
+        ', [
             'input' => [
                 'title' => 'My Article',
                 'content' => 'The content of the article',
-            ]
+            ],
         ]);
 
         $decodedResponse = $this->decodeResponse($response);
@@ -34,7 +34,7 @@ class CreateArticleMutationTest extends GraphQLTestCase
         $this->seeJsonStructure([
             'data' => [
                 'createArticle',
-            ]
+            ],
         ], $decodedResponse);
 
         $this->assertNotNull($decodedResponse['data']['createArticle']);
@@ -46,5 +46,4 @@ class CreateArticleMutationTest extends GraphQLTestCase
     {
         $this->assertArrayNotHasKey('errors', $decodedResponse, json_encode($decodedResponse, JSON_PRETTY_PRINT));
     }
-
 }

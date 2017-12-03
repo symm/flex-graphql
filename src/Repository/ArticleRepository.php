@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -27,8 +29,9 @@ class ArticleRepository extends ServiceEntityRepository
         return $this->mapArticles($articles);
     }
 
-    private function mapArticles(array $articles) {
-        return array_map(function(Article $article){
+    private function mapArticles(array $articles)
+    {
+        return array_map(function (Article $article) {
             return [
                 'id' => $article->getId()->toString(),
                 'title' => $article->getTitle(),

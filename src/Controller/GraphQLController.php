@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -46,10 +48,10 @@ class GraphQLController extends Controller
 
         $server = new StandardServer([
             'schema' => $this->getSchema($config['schemaFile']),
-            'debug'  => $config['debug'],
+            'debug' => $config['debug'],
             'context' => $context,
             'validationRules' => [
-                new QueryDepth($config['maxQueryDepth'])
+                new QueryDepth($config['maxQueryDepth']),
             ],
             'queryBatching' => $config['queryBatching'],
             'promiseAdapter' => new SyncPromiseAdapter(),
@@ -63,8 +65,8 @@ class GraphQLController extends Controller
     private function getConfig(): array
     {
         return [
-            'debug' => $this->kernel->isDebug() ? Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE  : 0,
-            'schemaFile' => __DIR__ . '/../../config/schema.graphqls',
+            'debug' => $this->kernel->isDebug() ? Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE : 0,
+            'schemaFile' => __DIR__.'/../../config/schema.graphqls',
             'maxQueryDepth' => 11,
             'queryBatching' => true,
         ];
@@ -82,13 +84,13 @@ class GraphQLController extends Controller
 
     private function getSchema(string $schemaFile): Schema
     {
-        $schemaCache = $this->kernel->getCacheDir(). '/schema.cache';
+        $schemaCache = $this->kernel->getCacheDir().'/schema.cache';
 
         if (file_exists($schemaCache) && !$this->kernel->isDebug()) {
             $document = AST::fromArray(unserialize(file_get_contents($schemaCache), []));
         } else {
             $document = Parser::parse(file_get_contents($schemaFile));
-            file_put_contents($schemaCache, serialize(AST::toArray($document)) );
+            file_put_contents($schemaCache, serialize(AST::toArray($document)));
         }
 
         return BuildSchema::build($document, $this->typeConfigDecorator);

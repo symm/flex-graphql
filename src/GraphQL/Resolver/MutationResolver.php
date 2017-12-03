@@ -1,8 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace App\GraphQL\Resolver;
-
 
 use App\Entity\Article;
 use App\Entity\Author;
@@ -21,7 +21,7 @@ class MutationResolver implements Resolver
 
     public function __invoke($root, $args, $context, ResolveInfo $info)
     {
-        if ($info->fieldName === 'createArticle') {
+        if ('createArticle' === $info->fieldName) {
             return $this->createArticle($context['user'], $args['input']['title'], $args['input']['content']);
         }
     }
@@ -38,7 +38,7 @@ class MutationResolver implements Resolver
                 'id' => $article->getId()->toString(),
                 'title' => $article->getTitle(),
                 'content' => $article->getContent(),
-            ]
+            ],
         ];
     }
 }
