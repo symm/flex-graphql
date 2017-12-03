@@ -1,9 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
 use App\DataFixtures\AppFixtures;
-use App\Entity\Article;
 use App\Tests\GraphQLTestClient;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -20,7 +21,7 @@ class GraphQLTestCase extends WebTestCase
     /** @var GraphQLTestClient */
     protected $client;
 
-    /** @var  ReferenceRepository */
+    /** @var ReferenceRepository */
     private $fixtures;
 
     public function setUp(): void
@@ -85,7 +86,7 @@ class GraphQLTestCase extends WebTestCase
     {
         $decoded = json_decode($response->getContent(), true);
 
-        if ($decoded === null) {
+        if (null === $decoded) {
             $message = sprintf('Error decoding JSON: %s %s', json_last_error(), json_last_error_msg());
             throw new \RuntimeException($message);
         }
@@ -96,7 +97,7 @@ class GraphQLTestCase extends WebTestCase
     protected function seeJsonStructure(array $structure, array $responseData)
     {
         foreach ($structure as $key => $value) {
-            if (is_array($value) && $key === '*') {
+            if (is_array($value) && '*' === $key) {
                 $this->assertInternalType('array', $responseData);
                 foreach ($responseData as $responseDataItem) {
                     $this->seeJsonStructure($structure['*'], $responseDataItem);
@@ -119,8 +120,8 @@ class GraphQLTestCase extends WebTestCase
                 '*' => [
                     'message',
                     'category',
-                ]
-            ]
+                ],
+            ],
         ], $this->decodeResponse($response));
     }
 
@@ -134,7 +135,6 @@ class GraphQLTestCase extends WebTestCase
             ],
             $decodedResponse['errors']
         );
-
     }
 
     protected function assertContentType(string $expectedContentType, Response $response)

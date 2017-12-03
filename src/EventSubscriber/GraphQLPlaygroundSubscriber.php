@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
@@ -11,14 +13,14 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class GraphQLPlaygroundSubscriber implements EventSubscriberInterface
 {
-
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
-        $request    = $event->getRequest();
+        $request = $event->getRequest();
         if ($controller[0] instanceof GraphQLController && $this->shouldLoad($request)) {
             $event->setController(function () use ($controller) {
-                $content = file_get_contents(__DIR__ . '/../Resources/playground.html');
+                $content = file_get_contents(__DIR__.'/../Resources/playground.html');
+
                 return new Response($content);
             });
         }
@@ -26,7 +28,7 @@ class GraphQLPlaygroundSubscriber implements EventSubscriberInterface
 
     private function shouldLoad(Request $request)
     {
-        return $request->getMethod() === 'GET' && $request->query->count() === 0;
+        return 'GET' === $request->getMethod() && 0 === $request->query->count();
     }
 
     public static function getSubscribedEvents(): array

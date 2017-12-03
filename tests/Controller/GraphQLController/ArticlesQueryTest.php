@@ -1,12 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Controller\GraphQLController;
 
 use App\Entity\Article;
 use App\Tests\Controller\GraphQLTestCase;
-use GraphQLRelay\Node\Node;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 class ArticlesQueryTest extends GraphQLTestCase
 {
@@ -33,7 +32,8 @@ class ArticlesQueryTest extends GraphQLTestCase
 
         $decoded = $this->decodeResponse($response);
 
-        $this->seeJsonStructure([
+        $this->seeJsonStructure(
+            [
             'data' => [
                 'articles' => ['*' => [
                     'id',
@@ -43,8 +43,8 @@ class ArticlesQueryTest extends GraphQLTestCase
                     ],
                     'title',
                     'content',
-                ]]
-            ]
+                ]],
+            ],
         ],
             $decoded
         );

@@ -1,8 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace App\DataFixtures;
-
 
 use App\Entity\Article;
 use App\Entity\Author;
@@ -17,13 +17,12 @@ class AppFixtures extends Fixture
         $faker = Factory::create();
         $faker->seed(1234);
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             $author = new Author($faker->name());
-            $this->setReference('author-' . $i, $author);
+            $this->setReference('author-'.$i, $author);
 
             $article = new Article($author, $faker->paragraph(), $faker->paragraph());
-            $this->setReference('article-' . $i, $article);
-
+            $this->setReference('article-'.$i, $article);
 
             $manager->persist($author);
             $manager->persist($article);

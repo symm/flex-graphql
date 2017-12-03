@@ -13,5 +13,9 @@ before_install:
 install:
     - travis_retry composer install
 
+script:
+    - composer lint
+    - composer test
+
 php:
     - '7.1'

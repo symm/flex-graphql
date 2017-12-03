@@ -1,15 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\GraphQL\DataLoader;
 
-use App\Entity\Author;
 use App\Repository\AuthorRepository;
-use Doctrine\Common\Collections\Collection;
 use GraphQL\Executor\Promise\PromiseAdapter;
 use Overblog\DataLoader\DataLoader;
 use Overblog\PromiseAdapter\Adapter\WebonyxGraphQLSyncPromiseAdapter;
 use Overblog\PromiseAdapter\PromiseAdapterInterface;
-use Ramsey\Uuid\Uuid;
 
 class BatchAuthorLoader
 {
